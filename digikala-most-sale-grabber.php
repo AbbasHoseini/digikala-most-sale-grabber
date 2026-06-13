@@ -104,6 +104,12 @@ function check_product_exists($product_id)
     return !empty($exists);
 }
 
+function rial_to_toman($price)
+{
+    // return (int) ($price / 10);
+    return round($price / 10);
+}
+
 function create_woocommerce_product($data, $moreProductInfo)
 {
 
@@ -141,8 +147,15 @@ function create_woocommerce_product($data, $moreProductInfo)
 
     $product = new WC_Product_Simple();
     $product->set_name($data['title_fa']);
-    $product->set_price($data["default_variant"]["price"]["selling_price"]);
-    $product->set_regular_price($data["default_variant"]["price"]["rrp_price"]);
+
+    $price = $data["default_variant"]["price"]["selling_price"] ?? 0;
+    $regular = $data["default_variant"]["price"]["rrp_price"] ?? 0;
+
+    $product->set_price(rial_to_toman($price));
+    $product->set_regular_price(rial_to_toman($regular));
+
+    // $product->set_price($data["default_variant"]["price"]["selling_price"]);
+    // $product->set_regular_price($data["default_variant"]["price"]["rrp_price"]);
     $product->set_short_description($moreProductInfo['test_title_fa']);
     $product->set_description($moreProductInfo['review']["description"]);
     $product->set_status('publish');
